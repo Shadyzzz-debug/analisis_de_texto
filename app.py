@@ -4,27 +4,119 @@ from textblob import TextBlob # REQUIERE: pip install textblob
 import re
 from googletrans import Translator # REQUIERE: pip install googletrans
 
+# --- CSS GÓTICO: PALETA BLOODBORNE ---
+gothic_css = """
+<style>
+/* Paleta Gótica: Fondo #0A0A0A, Texto #F5F5DC, Acento/Sangre #8B0000, Metal #6B5B3E */
+.stApp {
+    background-color: #0A0A0A;
+    color: #F5F5DC;
+    font-family: 'Georgia', serif;
+}
+
+/* Título Principal (h1): Cincelado, Dramático y GRANDE */
+h1 {
+    color: #8B0000; /* Rojo sangre */
+    text-shadow: 3px 3px 8px #000000;
+    font-size: 3.5em; /* Aumentado */
+    border-bottom: 7px double #6B5B3E; /* Borde más grueso */
+    padding-bottom: 15px;
+    margin-bottom: 40px;
+    text-align: center;
+    letter-spacing: 3px;
+}
+
+/* Subtítulos (h2, h3): Menos prominentes, color de metal */
+h2, h3 {
+    color: #D4D4D4;
+    font-family: 'Georgia', serif;
+    letter-spacing: 1px;
+}
+
+/* Sidebar: Fondo de cámara oscura con bordes intrincados */
+[data-testid="stSidebar"] {
+    background-color: #1A1A1A;
+    color: #F5F5DC;
+    border-right: 3px solid #6B5B3E;
+    box-shadow: 0 0 15px rgba(107, 91, 62, 0.5), inset 0 0 5px rgba(0, 0, 0, 0.8);
+}
+
+/* Botones (Forjar, Iniciar): Botones tipo Sello/Relicario */
+.stButton > button {
+    background-color: #444444; /* Base metálica */
+    color: #F5F5DC;
+    border: 3px solid #8B0000; /* Borde rojo sangre */
+    border-radius: 8px;
+    padding: 12px 25px;
+    font-weight: bold;
+    box-shadow: 6px 6px 10px #000000, inset 0 0 10px rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.1s;
+}
+
+.stButton > button:hover {
+    background-color: #8B0000; /* Hover a rojo intenso */
+    color: white;
+    box-shadow: 8px 8px 15px #000000;
+    transform: translateY(-2px);
+}
+
+/* Alertas y Contenedores de Texto */
+div[data-testid="stAlert"] {
+    background-color: #1A1A1A !important;
+    border: 2px solid #6B5B3E !important;
+    color: #F5F5DC !important;
+    font-family: 'Georgia', serif;
+    box-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+}
+
+/* Texto de Expander (Cofres de conocimiento) */
+div[data-testid="stExpander"] {
+    border: 1px solid #6B5B3E !important;
+    border-radius: 6px;
+    margin-top: 15px;
+    background-color: #151515;
+}
+div[data-testid="stExpander"] > div:first-child > div:first-child {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #F5F5DC;
+}
+
+/* Gráficos y progreso */
+.stProgress > div > div > div > div {
+    background-color: #8B0000; /* Color de progreso rojo sangre */
+}
+
+/* Texto de estado (success, warning, error) */
+.stSuccess { background-color: #330000; color: #F5F5DC; border-left: 5px solid #8B0000; }
+.stWarning { background-color: #333300; color: #F5F5DC; border-left: 5px solid #6B5B3E; }
+.stError { background-color: #550000; color: #F5F5DC; border-left: 5px solid #FF4B4B; }
+</style>
+"""
+st.markdown(gothic_css, unsafe_allow_html=True)
+
 # Configuración de la página
 st.set_page_config(
-    page_title="Analizador de Texto Simple",
-    page_icon="📊",
+    page_title="El Escudriñador de Papiro Perdido",
+    page_icon="👁️",
     layout="wide"
 )
 
-# Título y descripción
-st.title("📝 Analizador de Texto con TextBlob")
+# Título y descripción GÓTICA
+st.title("El Escudriñador de Papiro Perdido")
 st.markdown("""
-Esta aplicación utiliza TextBlob para realizar un análisis básico de texto, traduciendo previamente el contenido a inglés para mejorar la precisión del modelo:
-- Análisis de sentimiento (Positivo, Negativo, Neutral)
-- Medición de la subjetividad (Opinión vs. Hecho)
-- Análisis de frecuencia de palabras clave
+### **El Oráculo del Verbo**
+Este artefacto utiliza la [TextBlob] y la [Traducción Mística] para desentrañar la esencia emocional de cualquier escrito:
+- **Polaridad del Alma:** El sentir oculto, de la Calamidad (-1) a la Éxtasis (+1).
+- **Naturaleza del Escrito:** La medida de su subjetividad (Opinión vs. Verdad Absoluta).
+- **Frecuencias de Runas Clave:** Las palabras que portan el mayor peso en el códice.
 """)
 
-# Barra lateral
-st.sidebar.title("Opciones")
+# Barra lateral GÓTICA
+st.sidebar.title("Protocolo del Oráculo")
 modo = st.sidebar.selectbox(
-    "Selecciona el modo de entrada:",
-    ["Texto directo", "Archivo de texto"]
+    "Selecciona el Modo de Inscripción:",
+    ["Inscripción en el Altar", "Carga del Códice (Archivo)"]
 )
 
 # Función para contar palabras sin depender de NLTK
@@ -94,21 +186,19 @@ def traducir_texto(texto):
         traduccion = translator.translate(texto, dest='en')
         return traduccion.text
     except Exception as e:
-        st.error(f"Error al traducir (googletrans): {e}")
-        return texto # Devolver el texto original si falla la traducción
+        st.error(f"❌ Fracaso de la Tradición Mística: {e}. Se utiliza el texto original.")
+        return texto
 
 # Función para procesar el texto con TextBlob (versión con traducción)
 def procesar_texto(texto):
-    # Guardar el texto original
     texto_original = texto
     
-    # Traducir el texto al inglés para mejor análisis con TextBlob
+    # Traducir el texto al inglés
     texto_ingles = traducir_texto(texto)
     
     # Analizar el texto traducido con TextBlob
     blob = TextBlob(texto_ingles)
     
-    # Análisis de sentimiento
     sentimiento = blob.sentiment.polarity
     subjetividad = blob.sentiment.subjectivity
     
@@ -116,7 +206,6 @@ def procesar_texto(texto):
     frases_originales = [frase.strip() for frase in re.split(r'[.!?]+', texto_original) if frase.strip()]
     frases_traducidas = [frase.strip() for frase in re.split(r'[.!?]+', texto_ingles) if frase.strip()]
     
-    # Combinar frases originales y traducidas
     frases_combinadas = []
     for i in range(min(len(frases_originales), len(frases_traducidas))):
         frases_combinadas.append({
@@ -141,129 +230,137 @@ def procesar_texto(texto):
 def crear_visualizaciones(resultados):
     col1, col2 = st.columns(2)
     
-    # Visualización de sentimiento y subjetividad
+    # Análisis de Sentimiento y Subjetividad (Polaridad del Alma)
     with col1:
-        st.subheader("Análisis de Sentimiento y Subjetividad")
+        st.subheader("I. La Esencia Oculta")
         
-        # Sentimiento normalizado (rango -1 a 1 -> 0 a 1)
+        # Sentimiento normalizado
         sentimiento_norm = (resultados["sentimiento"] + 1) / 2
         
-        st.write("**Sentimiento:**")
+        st.write("#### **Polaridad del Alma (Sentimiento):**")
         st.progress(sentimiento_norm)
         
         if resultados["sentimiento"] > 0.05:
-            st.success(f"📈 Positivo ({resultados['sentimiento']:.2f})")
+            st.success(f"✨ Éxtasis Ascendente (Positivo: {resultados['sentimiento']:.2f})")
         elif resultados["sentimiento"] < -0.05:
-            st.error(f"📉 Negativo ({resultados['sentimiento']:.2f})")
+            st.error(f"💀 Calamidad inminente (Negativo: {resultados['sentimiento']:.2f})")
         else:
-            st.info(f"📊 Neutral ({resultados['sentimiento']:.2f})")
+            st.info(f"🌫️ Silencio Observante (Neutral: {resultados['sentimiento']:.2f})")
         
-        # Subjetividad (rango 0 a 1)
-        st.write("**Subjetividad:**")
+        # Subjetividad
+        st.write("#### **Naturaleza del Escrito (Subjetividad):**")
         st.progress(resultados["subjetividad"])
         
         if resultados["subjetividad"] > 0.5:
-            st.warning(f"💭 Alta subjetividad ({resultados['subjetividad']:.2f})")
+            st.warning(f"💭 Alta Creencia Personal (Subjetivo: {resultados['subjetividad']:.2f})")
         else:
-            st.info(f"📋 Baja subjetividad ({resultados['subjetividad']:.2f})")
+            st.info(f"📜 Baja Interpretación (Objetivo: {resultados['subjetividad']:.2f})")
     
-    # Palabras más frecuentes
+    # Palabras más frecuentes (Frecuencias de Runas Clave)
     with col2:
-        st.subheader("Palabras más frecuentes (en inglés)")
+        st.subheader("II. Frecuencias de Runas Clave")
         if resultados["contador_palabras"]:
-            # Convertir el diccionario a DataFrame para bar_chart
+            st.markdown("Las 10 runas más potentes del Códice (en su forma traducida):")
             df_palabras = pd.DataFrame(
                 list(resultados["contador_palabras"].items())[:10], 
-                columns=['Palabra', 'Frecuencia']
+                columns=['Runa', 'Poder']
             )
-            # Usar 'Palabra' como índice para el gráfico
-            df_palabras = df_palabras.set_index('Palabra')
+            df_palabras = df_palabras.set_index('Runa')
             st.bar_chart(df_palabras)
+        else:
+             st.warning("No hay runas detectadas para calcular frecuencias.")
     
     # Mostrar texto traducido
-    st.subheader("Traducción y Análisis Detallado")
-    with st.expander("Ver texto original y traducción"):
+    st.markdown("---")
+    st.subheader("III. El Eco del Manuscrito Traducido")
+    with st.expander("Revelar el Texto Completo (Original y Místico)"):
         col1, col2 = st.columns(2)
         with col1:
-            st.markdown("**Texto Original:**")
+            st.markdown("**El Papiro Inicial (Original):**")
             st.text(resultados["texto_original"])
         with col2:
-            st.markdown("**Texto Traducido (Inglés):**")
+            st.markdown("**La Traducción Mística (Inglés):**")
             st.text(resultados["texto_traducido"])
     
     # Análisis de frases
-    st.subheader("Análisis de las primeras 10 frases")
+    st.subheader("IV. Fragmentos de la Revelación (Análisis Detallado)")
+    st.caption("Cada fragmento es escudriñado por su Polaridad.")
     if resultados["frases"]:
         for i, frase_dict in enumerate(resultados["frases"][:10], 1):
             frase_original = frase_dict["original"]
             frase_traducida = frase_dict["traducido"]
             
             try:
-                # Re-analizar el sentimiento de la frase individual
                 blob_frase = TextBlob(frase_traducida)
                 sentimiento = blob_frase.sentiment.polarity
                 
                 if sentimiento > 0.05:
-                    emoji = "😊"
+                    emoji = "✨" # Éxtasis
+                    color = "green"
                 elif sentimiento < -0.05:
-                    emoji = "😟"
+                    emoji = "💀" # Calamidad
+                    color = "red"
                 else:
-                    emoji = "😐"
+                    emoji = "🌫️" # Silencio
+                    color = "orange"
                 
-                st.write(f"**{i}. {emoji}** **Original:** *\"{frase_original}\"*")
-                st.write(f"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Traducción:** *\"{frase_traducida}\"* (Sentimiento: {sentimiento:.2f})")
-                st.write("---")
+                st.markdown(f"""
+                <div style="background-color: #1A1A1A; padding: 10px; border-radius: 5px; margin-bottom: 5px; border-left: 3px solid #6B5B3E;">
+                    <p style="color: #F5F5DC; font-size: 1.1em;">
+                        {i}. {emoji} **Original:** *"{frase_original}"*
+                    </p>
+                    <p style="color: #D4D4D4; font-size: 0.9em;">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Traducción:** *"{frase_traducida}"* (<span style="color: {color};">Polaridad: {sentimiento:.2f}</span>)
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
             except:
-                st.write(f"**{i}. ❓** **Original:** *\"{frase_original}\"*")
-                st.write(f"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Traducción:** *\"{frase_traducida}\"* (Error de análisis)")
+                st.markdown(f"{i}. ❓ **Original:** *\"{frase_original}\"*")
+                st.markdown(f"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Traducción:** *\"{frase_traducida}\"* (Error Místico)")
                 st.write("---")
     else:
-        st.write("No se detectaron frases.")
+        st.warning("El velo es demasiado denso. No se detectaron fragmentos.")
 
 # Lógica principal según el modo seleccionado
-if modo == "Texto directo":
-    st.subheader("Ingresa tu texto para analizar")
-    texto = st.text_area("", height=200, placeholder="Escribe o pega aquí el texto que deseas analizar (funciona mejor con textos en español, inglés o la mayoría de idiomas comunes)...")
+if modo == "Inscripción en el Altar":
+    st.subheader("Inscribe el Ritual en el Papiro")
+    texto = st.text_area("", height=200, placeholder="Escribe aquí el grimorio que deseas desentrañar...", key="altar_input")
     
-    if st.button("Analizar texto"):
+    if st.button("🔥 Forjar el Análisis Rúnico"):
         if texto.strip():
-            with st.spinner("Analizando y traduciendo texto..."):
+            with st.spinner("Desentrañando los velos de la verdad y traduciendo la lengua arcana..."):
                 resultados = procesar_texto(texto)
                 crear_visualizaciones(resultados)
         else:
-            st.warning("Ingrese texto para análisis.")
+            st.warning("⚠️ El Altar está vacío. Se requiere una inscripción.")
 
-elif modo == "Archivo de texto":
-    st.subheader("Carga un archivo de texto")
+elif modo == "Carga del Códice (Archivo)":
+    st.subheader("Carga un pergamino (Archivo .txt, .csv, o .md)")
     archivo = st.file_uploader("", type=["txt", "csv", "md"])
     
     if archivo is not None:
         try:
-            # Leer el contenido del archivo
             contenido = archivo.getvalue().decode("utf-8")
             
-            with st.expander("Ver contenido del archivo"):
+            with st.expander("Inspeccionar el contenido del Códice"):
                 st.text(contenido[:1000] + ("..." if len(contenido) > 1000 else ""))
             
-            if st.button("Analizar archivo"):
-                with st.spinner("Analizando y traduciendo archivo..."):
+            if st.button("🗝️ Iniciar el Ritual de Archivo"):
+                with st.spinner("Desentrañando los velos de la verdad y traduciendo la lengua arcana..."):
                     resultados = procesar_texto(contenido)
                     crear_visualizaciones(resultados)
         except Exception as e:
-            st.error(f"Error al procesar el archivo: {e}")
+            st.error(f"❌ Error al profanar el Códice: {e}")
 
-# Información adicional
-with st.expander("📚 Información sobre el análisis y dependencias"):
+# Información adicional GÓTICA
+st.markdown("---")
+with st.expander("🕯️ Advertencia y Dependencias Arcanas"):
     st.markdown("""
-    ### Sobre el análisis de texto
+    Este artefacto depende de la magia de las librerías externas:
     
-    - **Sentimiento**: Varía de -1 (muy negativo) a 1 (muy positivo).
-    - **Subjetividad**: Varía de 0 (muy objetivo, basado en hechos) a 1 (muy subjetivo, basado en opiniones).
+    - **Polaridad y Subjetividad** provienen de `textblob`.
+    - **La Traducción Mística** (necesaria para el análisis) es cortesía de `googletrans`.
     
-    ### Dependencias requeridas
-    
-    Este código utiliza librerías externas que deben estar instaladas en el entorno:
-    ```bash
-    pip install streamlit pandas textblob googletrans
-    ```
+    Asegúrate de que estas runas estén correctamente invocadas (`pip install streamlit pandas textblob googletrans`).
     """)
+
